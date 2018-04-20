@@ -76,32 +76,34 @@ class App extends Component {
 
   onPictureSubmit = () => {
     this.setState({imageUrl: this.state.input});
-    fetch('https://warm-harbor-69145.herokuapp.com/imageurl', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        input: this.state.input
-      })
-    })
-    .then(response => response.json())
-    .then(response => {
-      if (response) {
-        fetch('https://warm-harbor-69145.herokuapp.com/image', {
-        method: 'put',
+    if (this.state.input !== '') {
+      fetch('https://warm-harbor-69145.herokuapp.com/imageurl', {
+        method: 'post',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          id: this.state.user.id
+          input: this.state.input
         })
       })
-        .then(response => response.json())
-        .then(count => {
-          this.setState(Object.assign(this.state.user, {entries: count}))
+      .then(response => response.json())
+      .then(response => {
+        if (response) {
+          fetch('https://warm-harbor-69145.herokuapp.com/image', {
+          method: 'put',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            id: this.state.user.id
+          })
         })
-        .catch(console.log);
-      }
-      this.displayFaceBox(this.calculateFaceLocation(response))
-    })
-    .catch(err => console.log(err));
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, {entries: count}))
+          })
+          .catch(console.log);
+        }
+        this.displayFaceBox(this.calculateFaceLocation(response))
+      })
+      .catch(err => console.log(err));
+    }
   }
 
 onRouteChange = (route) => {
